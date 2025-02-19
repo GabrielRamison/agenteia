@@ -1,0 +1,398 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    background: linear-gradient(to bottom, #000, #222);
+    margin: 0;
+    padding: 20px;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 3rem;
+    text-shadow: 0 0 10px rgba(0, 162, 255, 0.7);
+    margin-bottom: 20px;
+}
+
+.container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    border: 3px solid #444;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+    margin-bottom: 30px;
+}
+
+.background {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.lamp {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    z-index: 2;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.lamp::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#lamp1 {
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#lamp2 {
+    top: 80px;
+    left: 80px;
+}
+
+#lamp3 {
+    top: 80px;
+    right: 80px;
+}
+
+.lamp-glow {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: 0.8;
+}
+
+#glow1 {
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#glow2 {
+    top: 80px;
+    left: 80px;
+}
+
+#glow3 {
+    top: 80px;
+    right: 80px;
+}
+
+.ac {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 40px;
+    background: linear-gradient(to bottom, #eee, #ccc);
+    text-align: center;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    border: 1px solid #999;
+    transition: all 0.3s ease;
+}
+
+.ac::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    box-shadow: 0 0 5px red;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ac.on::before {
+    opacity: 1;
+    background-color: #00ff00;
+    box-shadow: 0 0 5px #00ff00;
+}
+
+.controls {
+    background: rgba(40, 40, 40, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    width: 80%;
+    max-width: 800px;
+}
+
+.controls h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #555;
+    padding-bottom: 10px;
+    color: #0af;
+}
+
+.control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(20, 20, 20, 0.5);
+    border-radius: 5px;
+}
+
+.control-row label {
+    flex: 0 0 100px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.control-row input[type="color"] {
+    width: 60px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+}
+
+.control-row input[type="range"] {
+    flex: 1;
+    margin: 0 10px;
+    height: 8px;
+    -webkit-appearance: none;
+    background: #555;
+    border-radius: 4px;
+    outline: none;
+}
+
+.control-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0af;
+    cursor: pointer;
+}
+
+.intensity-value {
+    flex: 0 0 40px;
+    text-align: center;
+    font-weight: bold;
+    background: #333;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.ac-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #0af;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #0af;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.temp-control {
+    display: flex;
+    align-items: center;
+    background: #333;
+    border-radius: 25px;
+    padding: 5px;
+}
+
+.temp-btn {
+    width: 30px;
+    height: 30px;
+    background: #555;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.temp-btn:hover {
+    background: #777;
+}
+
+#acTemp {
+    width: 50px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+/* Estilos para o controle de cena */
+.scene-control {
+    width: 80%;
+    max-width: 800px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    background: rgba(40, 40, 40, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.scene-control input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: white;
+    font-size: 1rem;
+}
+
+.ai-provider-select {
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.ai-provider-select:focus {
+    outline: 1px solid #0af;
+}
+
+.scene-control button {
+    padding: 12px 24px;
+    background: #0af;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.scene-control button:hover {
+    background: #08c;
+}
+
+.scene-control button:active {
+    transform: translateY(1px);
+}
+
+.status {
+    flex-basis: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.status.success {
+    background: rgba(0, 200, 0, 0.2);
+    color: #0f0;
+}
+
+.status.error {
+    background: rgba(200, 0, 0, 0.2);
+    color: #f66;
+}
+
+.status.loading {
+    background: rgba(0, 100, 200, 0.2);
+    color: #0cf;
+}
+
+.status.info {
+    background: rgba(100, 100, 100, 0.2);
+    color: #ccc;
+}

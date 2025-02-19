@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulatrix</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Simulatrix</h1>
+    <div class="container">
+        <img src="house.png" alt="House Background" class="background">
+        <div id="lamp1" class="lamp"></div>
+        <div id="lamp2" class="lamp"></div>
+        <div id="lamp3" class="lamp"></div>
+        <div id="glow1" class="lamp-glow"></div>
+        <div id="glow2" class="lamp-glow"></div>
+        <div id="glow3" class="lamp-glow"></div>
+        <div id="ac" class="ac">OFF</div>
+        <canvas id="overlay" class="overlay"></canvas>
+    </div>
+
+    <div class="scene-control">
+        <input type="text" id="scene-description" placeholder="Descreva o ambiente desejado...">
+        <select id="ai-provider" class="ai-provider-select">
+            <option value="mock">Dados Simulados</option>
+            <option value="openai">OpenAI</option>
+            <option value="anthropic">Claude</option>
+        </select>
+        <button id="apply-scene">Aplicar Cena</button>
+        <div id="status-message" class="status"></div>
+    </div>
+
+    <div class="controls">
+        <h3>Controle das Lâmpadas</h3>
+        <div class="control-row">
+            <label>Lâmpada 1</label>
+            <input type="color" id="color1" value="#ffffff">
+            <input type="range" id="intensity1" min="0" max="99" value="50">
+            <span id="intensityValue1" class="intensity-value">50</span>
+        </div>
+        <div class="control-row">
+            <label>Lâmpada 2</label>
+            <input type="color" id="color2" value="#ffccaa">
+            <input type="range" id="intensity2" min="0" max="99" value="50">
+            <span id="intensityValue2" class="intensity-value">50</span>
+        </div>
+        <div class="control-row">
+            <label>Lâmpada 3</label>
+            <input type="color" id="color3" value="#aaccff">
+            <input type="range" id="intensity3" min="0" max="99" value="50">
+            <span id="intensityValue3" class="intensity-value">50</span>
+        </div>
+
+        <h3>Controle do Ar-Condicionado</h3>
+        <div class="ac-controls">
+            <label for="acPower" class="switch">
+                <input type="checkbox" id="acPower">
+                <span class="slider"></span>
+            </label>
+            <div class="temp-control">
+                <button class="temp-btn" id="tempDown">-</button>
+                <input type="number" id="acTemp" min="16" max="30" value="22" readonly>
+                <button class="temp-btn" id="tempUp">+</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="api-client.js"></script>
+    <script>
+        // Sobrescrever a função requestEnvironment para incluir o provedor selecionado
+        async function requestEnvironment(description) {
+          try {
+            const provider = document.getElementById('ai-provider').value;
+            
+            const response = await fetch('/setHouseSetup', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ 
+                description,
+                provider 
+              })
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(`Erro: ${errorData.error || response.statusText}`);
+            }
+
+            const data = await response.json();
+            return data;
+          } catch (error) {
+            console.error('Falha ao solicitar configuração:', error);
+            throw error;
+          }
+        }
+        
+        // Configurar o botão para aplicar a cena
+        document.getElementById('apply-scene').addEventListener('click', async () => {
+            const description = document.getElementById('scene-description').value.trim();
+            if (!description) {
+                showStatus('Por favor, descreva o ambiente desejado', 'error');
+                return;
+            }
+            
+            showStatus('Processando solicitação...', 'loading');
+            
+            try {
+                const config = await requestEnvironment(description);
+                const success = applySettings(config);
+                
+                if (success) {
+                    showStatus('Ambiente configurado com sucesso!', 'success');
+                } else {
+                    showStatus('Erro ao aplicar configurações', 'error');
+                }
+            } catch (error) {
+                console.error('Falha na configuração:', error);
+                
+                // Mensagem de erro amigável
+                let errorMessage = 'Erro ao processar sua solicitação';
+                
+                if (error.message.includes('quota') || error.message.includes('billing')) {
+                    errorMessage = 'O serviço de IA está temporariamente indisponível. Usando configurações pré-definidas.';
+                } else if (error.message.includes('API OpenAI não configurada') || 
+                           error.message.includes('API Anthropic não configurada')) {
+                    errorMessage = 'O servidor não está configurado corretamente. Entre em contato com o administrador.';
+                }
+                
+                showStatus(errorMessage, 'error');
+            }
+        });
+        
+        // Função para mostrar mensagens de status
+        function showStatus(message, type = 'info') {
+            const statusElement = document.getElementById('status-message');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+            
+            // Limpar a mensagem após 5 segundos
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    statusElement.textContent = '';
+                    statusElement.className = 'status';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

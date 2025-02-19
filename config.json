@@ -1,0 +1,26 @@
+[
+  {
+    "luz principal": {
+      "intensidade": 99,
+      "código rgb": "#FF0000"
+    }
+  },
+  {
+    "luz esquerda": {
+      "intensidade": 99,
+      "código rgb": "#0000FF"
+    }
+  },
+  {
+    "luz direita": {
+      "intensidade": 99,
+      "código rgb": "#00FF00"
+    }
+  },
+  {
+    "ar condicionado": {
+      "estado": "ligado",
+      "temperatura": 22
+    }
+  }
+]
